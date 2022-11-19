@@ -1,11 +1,22 @@
 
-
+table {
+    table-layout: fixed;
+}
 .cell {
     border: 1px solid black;
+    height: 40px;
+    width: 40px;
 }
 .blackCell {
     background-color: black;
 }
 .whiteCell {
     background-color: white;
+}
+
+td img {
+    height: 35px;
+    width: 35px;
+    position: relative;
+    left: 4px;
 }
