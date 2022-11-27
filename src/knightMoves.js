@@ -1,27 +1,32 @@
 const knightMoves = (a, b) => {
-    let moves = 0;
-    let path = [];
+    const chessBoardGrid = buildGrid(8, 8);
+    const movesAdjList = buildMovesGraph(chessBoardGrid);
 
-    return {
-        moves,
-        path
-    }
+    return shortestPath(movesAdjList, a, b);
 };
+
 const shortestPath = (graph, a, b) => {
     const visitedNodes = new Set([a]);
     let queue = [[a, 0]];
 
-    
-
     while (queue.length > 0) {
         const [currentNode, moves] = queue.shift();
 
-        if (currentNode === b) return moves;
-
-
+        if (String(currentNode) === String(b)) return { moves };
+       
+        for (let neighbor of graph[currentNode]) {
+            if (! visitedNodes.has(neighbor)) {
+                visitedNodes.add(neighbor);
+                queue.push([neighbor, moves + 1]);
+            }
+        };
     }
-}
 
+    return -1; //if no path is found
+}
+const buildShortestPath = () => {
+
+}
 //Build a grid w each node's value as a  chessboard cell's x-y coordinates
 const buildGrid = (row, col) => {
     let grid = [];
@@ -34,7 +39,6 @@ const buildGrid = (row, col) => {
     }
     return grid;
 };
-const chessBoardGrid = buildGrid(8, 8);
 //convert a grid into an adjacency list, including neighbors of each node/cell
 const buildMovesGraph = (grid) => {
     let graphAdjList = {};
@@ -56,7 +60,7 @@ const buildMovesGraph = (grid) => {
             ];
             neighborXYs.forEach(neighborXY => {
                 const [row, col] = neighborXY;
-
+                //check if a neighbor's coordinates are within bounds
                 const rowInbounds = 0 <= row && row < grid.length;
                 const columnInbounds = 0 <= col && col < grid[0].length;
                 if (! rowInbounds || ! columnInbounds) return false;
@@ -68,4 +72,5 @@ const buildMovesGraph = (grid) => {
 
     return graphAdjList;
 };
-const movesAdjList = buildMovesGraph(chessBoardGrid);
+
+console.log(knightMoves([0, 0], [5, 5]));
