@@ -4,26 +4,6 @@ const knightMoves = (a, b) => {
 
     return shortestPath(movesAdjList, String(a), String(b));
 };
-
-const shortestPath = (graph, a, b) => {
-    const visitedNodes = new Set();
-    let queue = [[a, 0, []]];
-
-    while (queue.length > 0) {
-        let [currentNode, moves, [...path]] = queue.shift();
-        path.push(currentNode);
-        
-        if (String(currentNode) === String(b)) return {moves, path};
-
-        if (! visitedNodes.has(currentNode)) {
-            const neighbors = graph[currentNode].map(neighbor => [neighbor, moves + 1, path]);
-            queue.push(...neighbors);
-            // queue.push(...graph[currentNode].map(neighbor => [neighbor, moves+1, path])); //condense above 2 lines to 1
-            visitedNodes.add(currentNode);
-        }
-    }
-};
-
 //Build a grid w each node's value as a  chessboard cell's x-y coordinates
 const buildGrid = (row, col) => {
     let grid = [];
@@ -69,6 +49,26 @@ const buildMovesGraph = (grid) => {
 
     return graphAdjList;
 };
+//bfs to find min moves from point a to b & track the path
+const shortestPath = (graph, a, b) => {
+    const visitedNodes = new Set();
+    let queue = [[a, 0, []]];
 
-console.log(knightMoves([0, 0], [3, 3]));
-console.log(knightMoves([3, 3], [4, 3]));
+    while (queue.length > 0) {
+        let [currentNode, moves, [...path]] = queue.shift();
+        path.push(currentNode);
+        
+        if (String(currentNode) === String(b)) return {moves, path};
+
+        if (! visitedNodes.has(currentNode)) {
+            const neighbors = graph[currentNode].map(neighbor => [neighbor, moves + 1, path]);
+            queue.push(...neighbors);
+            // queue.push(...graph[currentNode].map(neighbor => [neighbor, moves+1, path])); //condense above 2 lines to 1
+            visitedNodes.add(currentNode);
+        }
+    }
+};
+console.log(knightMoves([0, 0], [3, 3])); //{ moves: 2, path: [ '0,0', '1,2', '3,3' ] }
+console.log(knightMoves([3, 3], [4, 3])); //{ moves: 3, path: [ '3,3', '4,5', '6,4', '4,3' ] }
+
+export { knightMoves };
