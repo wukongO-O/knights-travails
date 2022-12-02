@@ -68,7 +68,7 @@ const shortestPath = (graph, a, b) => {
         }
     }
 };
-console.log(knightMoves([0, 0], [3, 3])); //{ moves: 2, path: [ '0,0', '1,2', '3,3' ] }
-console.log(knightMoves([3, 3], [4, 3])); //{ moves: 3, path: [ '3,3', '4,5', '6,4', '4,3' ] }
+// console.log(knightMoves([0, 0], [3, 3])); //{ moves: 2, path: [ '0,0', '1,2', '3,3' ] }
+// console.log(knightMoves([3, 3], [4, 3])); //{ moves: 3, path: [ '3,3', '4,5', '6,4', '4,3' ] }
 
 export { knightMoves };

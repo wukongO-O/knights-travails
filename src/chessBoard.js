@@ -27,7 +27,7 @@ gameBoard.setAttribute('cellspacing', '0');
 const cells = document.querySelectorAll('.cell');
 let cellClicks = 0;
 let knightXY;
-let destinationXY;
+let destinationXY = [0, 0];
 cells.forEach(cell => {
     cell.addEventListener('click', (e) => {
         cellClicks +=1;
@@ -76,10 +76,10 @@ const randomKnightTravails = () => {
     knightXY = [startX, startY];
     destinationXY = [dstX, dstY];
 
-    return {
-        knightXY,
-        destinationXY
-    } 
+    // return {
+    //     knightXY,
+    //     destinationXY
+    // } 
 };
 const randomNum = (min, max) => {
     return Math.floor(Math.random() * (max - min) + min);
@@ -91,32 +91,45 @@ const travail = (a, b) => {
     const pointB = document.querySelector('table').rows[b[0]].cells[b[1]];
     const stops = knightMoves(a, b).path;
 
-    horseMoves(stops);
-    showPath(stops);
+    horseMoves(stops), 1000;
+    showPath(stops), 6000;
     horseArrives(pointA, pointB);
 };
+//need to fix this 
 const horseMoves = (stops) => {
     const horse = document.getElementById('horse');
     for (let i = 0; i < stops.length - 1; i++) {
-        let stop = stops[i];
-        let nextStop = stops[i + 1];
-        moveX = (nextStop[0] - stop[0]) * 40;
-        moveY = (nextStop[1] - stop[1]) * 40;
-        horse.style.translate = `${moveX}px ${moveY}px`;
+        setTimeout (function(){
+            let step = stops[i].split(',').map(Number);
+            let nextStep = stops[i + 1].split(',').map(Number);
+            
+            const moveX = (nextStep[0] - step[0]) * 40;
+            const moveY = (nextStep[1] - step[1]) * 40;
+            //horse.style.transition = 'transform 1s';
+            horse.style.translate = `${moveX}px ${moveY}px`;
+        }, 500 * i);  
     };
 };
 const showPath = (stops) => {
     for (let i = 0; i < stops.length; i++) {
-        let stop = stops[i]
-        const stopCell = document.querySelector('table').rows[stop[0]].cells[stop[1]];
-        stopCell.textContent = i;
+        setTimeout(function(){
+            let step = stops[i].split(',').map(Number);
+            let stopCell = document.querySelector('table').rows[step[0]].cells[step[1]];
+            stopCell.textContent = i;
+            stopCell.style.color = 'red';
+        }, 500 * i);
     }
 };
 const horseArrives = (cellA, cellB) => {
-    cellA.removeChild(knightIcon);
-    cellB.appendChild(knightIcon);
+    setTimeout(function(){
+        cellA.removeChild(cellA.firstChild);
+        cellA.textContent = 'Start';
+        cellB.appendChild(knightIcon);
+        cellB.lastChild.removeAttribute('style', 'translate');
+    }, 4000);
+   
 }
-
+//removeChild of knight etc; clear the board
 const restart = () => {
  
 };
@@ -126,3 +139,24 @@ const randomBtn = document.createElement('button');
 randomBtn.textContent = 'Random Tour';
 gameArea.appendChild(randomBtn);
 randomBtn.addEventListener('click', randomKnightTravails);
+
+
+
+
+const travailBtn = document.createElement('button');
+travailBtn.textContent = 'Go!';
+gameArea.appendChild(travailBtn);
+
+travailBtn.addEventListener('click', () => {
+    const startCell = document.getElementById('horse').parentNode;
+    knightXY = [startCell.parentNode.rowIndex, startCell.cellIndex];
+    const dstCell = document.querySelector('td[style*="rgb(243, 195, 36)"]');
+    destinationXY = [dstCell.parentNode.rowIndex, dstCell.cellIndex];
+    console.log(knightXY);
+    console.log(destinationXY);
+    travail(knightXY, destinationXY)
+});
+
+const restartBtn = document.createElement('button');
+restartBtn.textContent = 'Restart';
+gameArea.appendChild(restartBtn);
