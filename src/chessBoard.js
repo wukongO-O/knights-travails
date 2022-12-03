@@ -91,24 +91,56 @@ const travail = (a, b) => {
     const pointB = document.querySelector('table').rows[b[0]].cells[b[1]];
     const stops = knightMoves(a, b).path;
 
-    horseMoves(stops), 1000;
-    showPath(stops), 6000;
-    horseArrives(pointA, pointB);
+    horseMoves(stops);
+    showPath(stops);
+    //horseArrives(pointA, pointB);
 };
 //need to fix this 
-const horseMoves = (stops) => {
+async function horseMoves(stops){
     const horse = document.getElementById('horse');
+
+    horse.style.position = 'relative';
     for (let i = 0; i < stops.length - 1; i++) {
-        setTimeout (function(){
-            let step = stops[i].split(',').map(Number);
-            let nextStep = stops[i + 1].split(',').map(Number);
+        let step = stops[i].split(',').map(Number);
+        let nextStep = stops[i + 1].split(',').map(Number);
+        if (i == 0) {
+            document.querySelector('table').rows[step[0]].cells[step[1]].style.position = 'relative';
             
-            const moveX = (nextStep[0] - step[0]) * 40;
-            const moveY = (nextStep[1] - step[1]) * 40;
-            //horse.style.transition = 'transform 1s';
-            horse.style.translate = `${moveX}px ${moveY}px`;
-        }, 500 * i);  
+        };
+
+        // setTimeout (function(){
+        //     // const moveX = (nextStep[0] - step[0]) * 40;
+        //     // const moveY = (nextStep[1] - step[1]) * 40;
+        //     // //horse.style.transition = 'transform 1s';
+        //     // horse.style.translate = `${moveX}px ${moveY}px`;
+        // }, 500 * i); 
+        
+       await moveEle(horse, step, nextStep);
     };
+};
+function moveEle(ele, pos, nextPos){
+    return new Promise(resolve => {
+        let motion = setInterval(changes, 5);
+        let moveX = (nextPos[0] - pos[0]) * 40;
+        let moveY = (nextPos[1] - pos[1]) * 40;
+    
+        function changes() {
+            if (pos[0] == moveX && pos[1] == moveY) {
+                clearInterval(motion);
+
+                resolve();
+            } else {
+                if (pos[0] != moveX) {
+                    pos[0] += moveX > pos[0] ? 1 : -1;
+                    ele.style.left = pos[0] + 'px';
+                }
+                if (pos[1] != moveY) {
+                    pos[1] += moveY > nextPos[1] ? 1 : -1;
+                    ele.style.top = pos[1] + 'px';
+                }
+            }
+        };
+    })
 };
 const showPath = (stops) => {
     for (let i = 0; i < stops.length; i++) {
@@ -139,8 +171,6 @@ const randomBtn = document.createElement('button');
 randomBtn.textContent = 'Random Tour';
 gameArea.appendChild(randomBtn);
 randomBtn.addEventListener('click', randomKnightTravails);
-
-
 
 
 const travailBtn = document.createElement('button');
