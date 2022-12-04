@@ -1,11 +1,32 @@
+@font-face {
+    font-family: 'comic_zine_otregular';
+    src: url('./font/comic_zine_ot-webfont.woff2') format('woff2'),
+         url('./font/comic_zine_ot-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+html, body {
+    box-sizing: border-box;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
 body {
     background-color: rgb(243, 195, 36);
 }
 
-.gameArea {
+.container {
+    min-height: 100%;
     display: grid;
+    grid-template-rows: auto 1fr auto;
+}
+
+.gameArea {
+    display: flex;
     place-content: center;
-    gap: 10px;
+    gap: 40px;
 }
 
 table {
@@ -13,12 +34,15 @@ table {
 }
 .cell {
     border: 1px solid black;
-    height: 40px;
-    width: 40px;
+    height: 65px;
+    width: 65px;
     font-family: monospace;
     font-weight: 800;
-    font-size: 12pt;
+    font-size: 18pt;
     text-align: center;
+}
+.cell:hover {
+    background-color: #fd80db !important;
 }
 .blackCell {
     background-color: black;
@@ -28,21 +52,66 @@ table {
 }
 
 td img {
-    height: 35px;
-    width: 35px;
+    height: 55px;
+    width: 55px;
     position: relative;
     left: 4px;
 }
 
 h1 {
-    font-family: monospace;
+    font-family: 'comic_zine_otregular', monospace;
     text-align: center;
+    font-size: 60pt;
 }
 
 button {
     color: white;
     background-color: black;
-    width: 140px;
+    width: 240px;
     place-self: center;
     font-family: monospace;
+    border-radius: 20px;
+    font-size: 18pt;
+    border: none;
+    padding: 8px;
+}
+button:hover {
+    color: #fd80db;
+}
+button:active {
+    box-shadow: 6px 8px 8px #fd80db;
+    transform: translateY(4px);
+}
+
+.btnDiv {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: flex-start;
+    padding-top: 100px;
+}
+p {
+    font-size: 18pt;
+    font-family: monospace;
+    width: 300px;
+    text-align: center;
+}
+
+footer {
+    text-align: center;
+    background-color: black;
+    color: white;
+    font-family: 'comic_zine_otregular';
+    font-size: 20pt;
+    padding: 10px;
+}
+footer svg {
+    stroke: white;
+    position: relative;
+    top: 3px;
+}
+footer svg:hover {
+    fill: #fd80db;
+    stroke: #fd80db;
+    transform: rotate(30deg);
 }

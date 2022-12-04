@@ -1,9 +1,9 @@
 import knight from './img/horse.svg';
 import { knightMoves } from './knightMoves';
 
-const gameArea = document.createElement('div');
-gameArea.classList.add('gameArea');
-document.body.appendChild(gameArea);
+const gameArea = document.querySelector('.gameArea');
+// gameArea.classList.add('gameArea');
+// document.body.appendChild(gameArea);
 //create an 8 x 8, black-n-white chess board via table element
 const gameBoard = document.createElement('table');
 for (let i = 0; i < 8; i++) {
@@ -20,8 +20,8 @@ for (let i = 0; i < 8; i++) {
     gameBoard.appendChild(row);
 };
 gameArea.appendChild(gameBoard);
-gameBoard.setAttribute('width', '400px');
-gameBoard.setAttribute('height', '400px');
+gameBoard.setAttribute('width', '650px');
+gameBoard.setAttribute('height', '650px');
 gameBoard.setAttribute('cellspacing', '0');
 
 //place knight & destination on chess board
@@ -38,7 +38,6 @@ cells.forEach(cell => {
         } else if (cellClicks == 2) {
             destination(e.target);
             destinationXY = getCellXY(e);
-            //cellClicks = 0;
         } else {
             e.preventDefault();
         };
@@ -61,6 +60,7 @@ const placeKnight = (cell) => {
 //click a cell to create a destination
 const destination = (cell) => {
     cell.style.backgroundColor = '#f3c324';
+    cell.textContent = 'End';
 };
 //radomly create a knight & destination
 const randomKnightTravails = () => {
@@ -73,6 +73,7 @@ const randomKnightTravails = () => {
 
     start.appendChild(knightIcon);
     destination.style.backgroundColor = '#f3c324';
+    destination.textContent = 'End';
 
     knightXY = [startX, startY];
     destinationXY = [dstX, dstY];
@@ -83,10 +84,7 @@ const randomNum = (min, max) => {
 
 //1 move horse-temp horse stops 2 show path (a-show step #) 3 horse ends at dst - removeChild from a & append to b
 const travail1 = (a, b) => {
-    // const pointA = document.querySelector('table').rows[a[0]].cells[a[1]];
-    // const pointB = document.querySelector('table').rows[b[0]].cells[b[1]];
     const stops = knightMoves(a, b).path;
-
     showPath(stops);
 };
 
@@ -96,10 +94,9 @@ const showPath = (stops) => {
             let step = stops[i].split(',').map(Number);
             let stopCell = document.querySelector('table').rows[step[0]].cells[step[1]];
             stopCell.textContent = i;
-            stopCell.style.color = '#E08E45';
+            stopCell.style.color = '#fd80db';
             stopCell.appendChild(knightIcon);
         }, 500 * i);
-        
     }
 };
 
@@ -122,92 +119,38 @@ const restart = () => {
     blackCell.forEach(cell => {
         cell.style.backgroundColor = '#000000';
     });
+
+    cellClicks = 0;
 };
 
 //buttons
+const buttonsDiv = document.createElement('div');
+buttonsDiv.classList.add('btnDiv');
+gameArea.appendChild(buttonsDiv);
+
+const textIntro = document.createElement('p');
+textIntro.textContent = 'Pick the start &  end on the board or click the random-tour button below!';
+buttonsDiv.appendChild(textIntro);
+
 const randomBtn = document.createElement('button');
 randomBtn.textContent = 'Random Tour';
-gameArea.appendChild(randomBtn);
+buttonsDiv.appendChild(randomBtn);
 randomBtn.addEventListener('click', randomKnightTravails);
-
 
 const travailBtn = document.createElement('button');
 travailBtn.textContent = 'Go!';
-gameArea.appendChild(travailBtn);
-
+buttonsDiv.appendChild(travailBtn);
 travailBtn.addEventListener('click', () => {
     const startCell = document.getElementById('horse').parentNode;
     knightXY = [startCell.parentNode.rowIndex, startCell.cellIndex];
     const dstCell = document.querySelector('td[style*="rgb(243, 195, 36)"]');
     destinationXY = [dstCell.parentNode.rowIndex, dstCell.cellIndex];
-    console.log(knightXY);
-    console.log(destinationXY);
+    
     travail1(knightXY, destinationXY);
 });
 
 const restartBtn = document.createElement('button');
 restartBtn.textContent = 'Restart';
-gameArea.appendChild(restartBtn);
+buttonsDiv.appendChild(restartBtn);
 restartBtn.addEventListener('click',restart);
 
-/*need to fix this 
-function horseMoves(stops){
-    for (let i = 0; i < stops.length - 1; i++) {
-        let step = stops[i].split(',').map(Number);
-        let pos1 = {x: step[0] * 40, y: step[1] * 40};
-        let nextStep = stops[i + 1].split(',').map(Number);
-        let pos2 = {x: nextStep[0] * 40, y: nextStep[1] * 40};
-
-        // if (i == 0) {
-        //     document.querySelector('table').rows[step[0]].cells[step[1]].style.position = 'relative';
-            
-        // };
-
-        const horse = document.getElementById('horse');
-            const moveX = (nextStep[0] - step[0]) * 40;
-            const moveY = (nextStep[1] - step[1]) * 40;
-            //horse.style.transition = 'transform 1s';
-            horse.style.translate = `${moveX}px ${moveY}px`;
-        
-        
-       //await moveEle(pos1, pos2);
-    };
-};
-
-function moveEle(pos, add){
-    return new Promise(resolve => {
-        var id = setInterval(frame, 15);
-        const horse = document.getElementById('horse');
-        horse.style.position = 'absolute';
-
-    function frame() {
-      if (pos.x == add.x && pos.y == add.y) {
-        clearInterval(id);
-        
-        // Fulfill promise when position is reached.
-        resolve();
-        
-      } else {
-        if (pos.x != add.x) {
-          pos.x += add.x > pos.x ? 1 : -1;
-          horse.style.left = pos.x + "px";
-        }
-        if (pos.y != add.y) {
-          pos.y += add.y > pos.y ? 1 : -1;
-          horse.style.top = pos.y + "px";
-        }
-      }
-    }
-  });
-};
-
-const horseArrives = (cellA, cellB) => {
-    setTimeout(function(){
-        cellA.removeChild(cellA.firstChild);
-        cellA.textContent = 'Start';
-        cellB.appendChild(knightIcon);
-        cellB.lastChild.removeAttribute('style', 'translate');
-    }, 4000);
-   
-}
-*/
