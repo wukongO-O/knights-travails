@@ -2,6 +2,7 @@ import knight from './img/horse.svg';
 import { knightMoves } from './knightMoves';
 
 const gameArea = document.createElement('div');
+gameArea.classList.add('gameArea');
 document.body.appendChild(gameArea);
 //create an 8 x 8, black-n-white chess board via table element
 const gameBoard = document.createElement('table');
@@ -75,95 +76,52 @@ const randomKnightTravails = () => {
 
     knightXY = [startX, startY];
     destinationXY = [dstX, dstY];
-
-    // return {
-    //     knightXY,
-    //     destinationXY
-    // } 
 };
 const randomNum = (min, max) => {
     return Math.floor(Math.random() * (max - min) + min);
 };
 
 //1 move horse-temp horse stops 2 show path (a-show step #) 3 horse ends at dst - removeChild from a & append to b
-const travail = (a, b) => {
-    const pointA = document.querySelector('table').rows[a[0]].cells[a[1]];
-    const pointB = document.querySelector('table').rows[b[0]].cells[b[1]];
+const travail1 = (a, b) => {
+    // const pointA = document.querySelector('table').rows[a[0]].cells[a[1]];
+    // const pointB = document.querySelector('table').rows[b[0]].cells[b[1]];
     const stops = knightMoves(a, b).path;
 
-    horseMoves(stops);
     showPath(stops);
-    //horseArrives(pointA, pointB);
 };
-//need to fix this 
-async function horseMoves(stops){
-    const horse = document.getElementById('horse');
 
-    horse.style.position = 'relative';
-    for (let i = 0; i < stops.length - 1; i++) {
-        let step = stops[i].split(',').map(Number);
-        let nextStep = stops[i + 1].split(',').map(Number);
-        if (i == 0) {
-            document.querySelector('table').rows[step[0]].cells[step[1]].style.position = 'relative';
-            
-        };
-
-        // setTimeout (function(){
-        //     // const moveX = (nextStep[0] - step[0]) * 40;
-        //     // const moveY = (nextStep[1] - step[1]) * 40;
-        //     // //horse.style.transition = 'transform 1s';
-        //     // horse.style.translate = `${moveX}px ${moveY}px`;
-        // }, 500 * i); 
-        
-       await moveEle(horse, step, nextStep);
-    };
-};
-function moveEle(ele, pos, nextPos){
-    return new Promise(resolve => {
-        let motion = setInterval(changes, 5);
-        let moveX = (nextPos[0] - pos[0]) * 40;
-        let moveY = (nextPos[1] - pos[1]) * 40;
-    
-        function changes() {
-            if (pos[0] == moveX && pos[1] == moveY) {
-                clearInterval(motion);
-
-                resolve();
-            } else {
-                if (pos[0] != moveX) {
-                    pos[0] += moveX > pos[0] ? 1 : -1;
-                    ele.style.left = pos[0] + 'px';
-                }
-                if (pos[1] != moveY) {
-                    pos[1] += moveY > nextPos[1] ? 1 : -1;
-                    ele.style.top = pos[1] + 'px';
-                }
-            }
-        };
-    })
-};
 const showPath = (stops) => {
     for (let i = 0; i < stops.length; i++) {
         setTimeout(function(){
             let step = stops[i].split(',').map(Number);
             let stopCell = document.querySelector('table').rows[step[0]].cells[step[1]];
             stopCell.textContent = i;
-            stopCell.style.color = 'red';
+            stopCell.style.color = '#E08E45';
+            stopCell.appendChild(knightIcon);
         }, 500 * i);
+        
     }
 };
-const horseArrives = (cellA, cellB) => {
-    setTimeout(function(){
-        cellA.removeChild(cellA.firstChild);
-        cellA.textContent = 'Start';
-        cellB.appendChild(knightIcon);
-        cellB.lastChild.removeAttribute('style', 'translate');
-    }, 4000);
-   
-}
+
 //removeChild of knight etc; clear the board
 const restart = () => {
- 
+    const cells = document.querySelectorAll('.cell');
+    cells.forEach(cell => {
+        cell.textContent ='';
+    })
+
+    const horse = document.getElementById('horse');
+    if (horse) horse.remove();
+
+    const whiteCells = document.querySelectorAll('.whiteCell');
+    whiteCells.forEach (cell => {
+        cell.style.backgroundColor = '#ffffff';
+    });
+    
+    const blackCell = document.querySelectorAll('.blackCell');
+    blackCell.forEach(cell => {
+        cell.style.backgroundColor = '#000000';
+    });
 };
 
 //buttons
@@ -184,9 +142,72 @@ travailBtn.addEventListener('click', () => {
     destinationXY = [dstCell.parentNode.rowIndex, dstCell.cellIndex];
     console.log(knightXY);
     console.log(destinationXY);
-    travail(knightXY, destinationXY)
+    travail1(knightXY, destinationXY);
 });
 
 const restartBtn = document.createElement('button');
 restartBtn.textContent = 'Restart';
 gameArea.appendChild(restartBtn);
+restartBtn.addEventListener('click',restart);
+
+/*need to fix this 
+function horseMoves(stops){
+    for (let i = 0; i < stops.length - 1; i++) {
+        let step = stops[i].split(',').map(Number);
+        let pos1 = {x: step[0] * 40, y: step[1] * 40};
+        let nextStep = stops[i + 1].split(',').map(Number);
+        let pos2 = {x: nextStep[0] * 40, y: nextStep[1] * 40};
+
+        // if (i == 0) {
+        //     document.querySelector('table').rows[step[0]].cells[step[1]].style.position = 'relative';
+            
+        // };
+
+        const horse = document.getElementById('horse');
+            const moveX = (nextStep[0] - step[0]) * 40;
+            const moveY = (nextStep[1] - step[1]) * 40;
+            //horse.style.transition = 'transform 1s';
+            horse.style.translate = `${moveX}px ${moveY}px`;
+        
+        
+       //await moveEle(pos1, pos2);
+    };
+};
+
+function moveEle(pos, add){
+    return new Promise(resolve => {
+        var id = setInterval(frame, 15);
+        const horse = document.getElementById('horse');
+        horse.style.position = 'absolute';
+
+    function frame() {
+      if (pos.x == add.x && pos.y == add.y) {
+        clearInterval(id);
+        
+        // Fulfill promise when position is reached.
+        resolve();
+        
+      } else {
+        if (pos.x != add.x) {
+          pos.x += add.x > pos.x ? 1 : -1;
+          horse.style.left = pos.x + "px";
+        }
+        if (pos.y != add.y) {
+          pos.y += add.y > pos.y ? 1 : -1;
+          horse.style.top = pos.y + "px";
+        }
+      }
+    }
+  });
+};
+
+const horseArrives = (cellA, cellB) => {
+    setTimeout(function(){
+        cellA.removeChild(cellA.firstChild);
+        cellA.textContent = 'Start';
+        cellB.appendChild(knightIcon);
+        cellB.lastChild.removeAttribute('style', 'translate');
+    }, 4000);
+   
+}
+*/
