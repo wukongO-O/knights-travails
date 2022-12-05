@@ -31,6 +31,7 @@ body {
 
 table {
     table-layout: fixed;
+    border: 5px black solid;
 }
 .cell {
     border: 1px solid black;

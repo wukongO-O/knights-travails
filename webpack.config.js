@@ -6,8 +6,8 @@ module.exports = {
     entry: './src/index.js',
     plugins: [
         new HtmlWebpackPlugin({
-            title: 'Knights Travails',
-            myPageHeader: '♟ Knights Travails',
+            title: 'Knight\'s Travails',
+            myPageHeader: '♟ Knight\'s Travails',
             template: './src/index.html'
         }),
       ],

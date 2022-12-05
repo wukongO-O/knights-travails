@@ -2,8 +2,6 @@ import knight from './img/horse.svg';
 import { knightMoves } from './knightMoves';
 
 const gameArea = document.querySelector('.gameArea');
-// gameArea.classList.add('gameArea');
-// document.body.appendChild(gameArea);
 //create an 8 x 8, black-n-white chess board via table element
 const gameBoard = document.createElement('table');
 for (let i = 0; i < 8; i++) {
@@ -154,3 +152,4 @@ restartBtn.textContent = 'Restart';
 buttonsDiv.appendChild(restartBtn);
 restartBtn.addEventListener('click',restart);
 
+//svg source: https://www.svgrepo.com/svg/30255/horse
