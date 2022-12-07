@@ -15,5 +15,5 @@ On the chessboard, a knight can move two steps forward and one step to the side 
 - Display the knight's move from the start to the destination
 
 ## Built with
-Pure JavaScript, CSS, HTML, Webpack
+Pure JavaScript, CSS, HTML, & Webpack
 
